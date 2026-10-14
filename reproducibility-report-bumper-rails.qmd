@@ -1,7 +1,7 @@
 ---
 title: "Reproducibility Report: Maglio & Polman (2014), Study 1"
 subtitle: "Bumper-rails version"
-author: "Your name here"
+author: "Plyfaa Suwanamalik-Murphy"
 date: today
 format:
   html:
@@ -121,7 +121,7 @@ Count the participants in each direction × station combination. Replace each
 
 ```{r}
 d |>
-  count("FIXME", "FIXME")
+  count(DIRECTION, STN_NAME)
 ```
 
 Does this match the sample size in the paper (202 total, 101 per platform)?
@@ -137,7 +137,7 @@ Fill in the formula with the outcome (the distance rating) and the two
 predictors.
 
 ```{r}
-mod <- aov(FIXME ~ FIXME * FIXME, data = d)
+mod <- aov(DISTANCE ~ DIRECTION * STN_NAME, data = d)
 
 summary(mod)
 ```
@@ -179,7 +179,7 @@ ss_residual <- anova_table |>
 
 anova_table |>
   filter(term != "Residuals") |>
-  mutate(partial_eta_sq = "FIXME") |>
+  mutate(partial_eta_sq = sumsq / (sumsq + ss_residual) )|>
   select(term, df, statistic, p.value, partial_eta_sq)
 ```
 
@@ -199,16 +199,16 @@ SS_direction / SS_total.
 
 # 1. Keep only the St. George ratings
 st_george <- d |>
-  filter("FIXME")
+  filter(STN_NAME == "STG")
 
 # 2. Which group rated St. George as farther away, eastbound or westbound?
 #    No statistics yet, just the mean rating in each direction.
 st_george |>
-  group_by("FIXME") |>
-  summarize(mean_distance = "FIXME", n = n())
+  group_by(DIRECTION) |>
+  summarize(mean_distance = mean(DISTANCE), n = n())
 
 # 3. One-way ANOVA: distance predicted by direction
-st_george_mod <- aov("FIXME", data = st_george)
+st_george_mod <- aov(DISTANCE ~ DIRECTION, data = st_george)
 tidy(st_george_mod)
 
 # 4. Partial eta squared (reuse your code from above)
@@ -250,16 +250,16 @@ Fill in this table as you go:
 Were you able to reproduce the results you attempted to reproduce? If not, which
 parts could you not reproduce?
 
-> ANSWER HERE
+> I was able to reproduce most of the main results. I did notice that some values were not exactly the same.
 
 How difficult was it to reproduce the results?
 
-> ANSWER HERE
+> It took some time for me to reproduce... still very new to R. Sometimes I found an error was because of me missing a parentheses. 
 
 What made it hard, and what made it easy? Think about the data files, the
 variable names, and how much the paper told you about the analysis.
 
-> ANSWER HERE
+> Mainly I had some trouble with the variable names. I did some experimenting when setting up ANOVA. One example is that I made simple errors such as confusing direction and distance. 
 
 ## Bonus questions
 
